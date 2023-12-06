@@ -9,10 +9,14 @@ locals {
   client_ca_file         = data.terraform_remote_state.hcp.outputs.client_ca_file
   client_config_file     = data.terraform_remote_state.hcp.outputs.client_config_file
   consul_version         = data.terraform_remote_state.hcp.outputs.consul_version
-
+  hcp_client_id          = data.terraform_remote_state.hcp.outputs.hcp_client_id
+  hcp_client_secret      = data.terraform_remote_state.hcp.outputs.hcp_client_secret
 }
 
-
+provider "hcp" {
+  client_id     = local.hcp_client_id
+  client_secret = local.hcp_client_secret
+}
 
 
 provider "consul" {
