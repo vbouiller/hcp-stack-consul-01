@@ -8,6 +8,7 @@ locals {
   install_demo_app       = true
   client_ca_file         = data.terraform_remote_state.hcp.outputs.client_ca_file
   client_config_file     = data.terraform_remote_state.hcp.outputs.client_config_file
+  consul_version         = data.terraform_remote_state.hcp.outputs.consul_version
 
 }
 
@@ -56,8 +57,8 @@ module "aws_ec2_consul_client" {
 
   allowed_http_cidr_blocks = ["0.0.0.0/0"]
   allowed_ssh_cidr_blocks  = ["0.0.0.0/0"]
-  client_ca_file           = local.consul_ca_file
-  client_config_file       = local.consul_config_file
+  client_ca_file           = local.client_ca_file
+  client_config_file       = local.client_config_file
   consul_version           = local.consul_version
   nat_public_ips           = module.vpc.nat_public_ips
   install_demo_app         = local.install_demo_app
