@@ -84,7 +84,7 @@ module "vpc" {
   cidr                    = var.network_address_space
   enable_dns_hostnames    = true
   enable_nat_gateway      = true
-  single_nat_gateway      = true
+  single_nat_gateway      = false
   one_nat_gateway_per_az  = false
   name                    = "${var.name}-vpc"
   private_subnets         = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
