@@ -50,8 +50,8 @@ resource "aws_instance" "bastionhost" {
   }
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
-  subnet_id                   = aws_subnet.dmz_subnet.id
-  private_ip                  = cidrhost(aws_subnet.dmz_subnet.cidr_block, 10)
+  subnet_id                   = element(module.vpc.public_subnets, 0)
+  #private_ip                  = cidrhost(aws_subnet.dmz_subnet.cidr_block, 10)
   associate_public_ip_address = "true"
   vpc_security_group_ids      = [aws_security_group.bastionhost.id]
   key_name                    = var.pub_key
@@ -66,7 +66,9 @@ resource "aws_instance" "web_nodes" {
   count                       = var.web_node_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  subnet_id                   = element(aws_subnet.web_subnet.*.id, count.index + 1)
+#  subnet_id                   = element(aws_subnet.web_subnet.*.id, count.index + 1)
+  subnet_id                   = element(module.vpc.private_subnets, count.index + 1)
+
   associate_public_ip_address = "false"
   vpc_security_group_ids      = [aws_security_group.web.id]
   key_name                    = var.pub_key
@@ -82,7 +84,7 @@ resource "aws_instance" "db_nodes" {
   count                       = var.db_node_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  subnet_id                   = element(aws_subnet.web_subnet.*.id, count.index + 1)
+  subnet_id                   = element(module.vpc.private_subnets, count.index +1) #element(aws_subnet.web_subnet.*.id, count.index + 1)
   associate_public_ip_address = "false"
   vpc_security_group_ids      = [aws_security_group.web.id]
   key_name                    = var.pub_key
