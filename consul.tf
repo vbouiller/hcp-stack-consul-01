@@ -7,7 +7,7 @@ locals {
   ssm                    = true
   install_demo_app       = true
   client_ca_file         = data.terraform_remote_state.hcp.outputs.client_ca_file
-  client_config_file     = data.terraform_remote_state.hcp.outpits.client_config_file
+  client_config_file     = data.terraform_remote_state.hcp.outputs.client_config_file
 
 }
 
