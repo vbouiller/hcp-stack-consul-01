@@ -46,22 +46,22 @@ data "aws_ami" "ubuntu" {
 }
 
 
-resource "aws_eip" "nat_gateway" {
-  #vpc = true
-}
+# resource "aws_eip" "nat_gateway" {
+#   #vpc = true
+# }
 
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat_gateway.id
-  subnet_id     = aws_subnet.dmz_subnet.id
+# resource "aws_nat_gateway" "nat" {
+#   allocation_id = aws_eip.nat_gateway.id
+#   subnet_id     = aws_subnet.dmz_subnet.id
 
-  tags = {
-    Name = "gw NAT"
-  }
+#   tags = {
+#     Name = "gw NAT"
+#   }
 
-  # To ensure proper ordering, it is recommended to add an explicit dependency
-  # on the Internet Gateway for the VPC.
-  depends_on = [aws_internet_gateway.igw]
-}
+#   # To ensure proper ordering, it is recommended to add an explicit dependency
+#   # on the Internet Gateway for the VPC.
+#   depends_on = [aws_internet_gateway.igw]
+# }
 
 
 # Network & Routing
@@ -80,12 +80,15 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.10.0"
 
-  azs                  = data.aws_availability_zones.available.names
-  cidr                 = var.network_address_space
-  enable_dns_hostnames = true
-  name                 = "${var.name}-vpc"
-  private_subnets      = ["10.0.10.0/24", "10.0.20.0/24", "10.0.30.0/24"]
-  public_subnets       = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  azs                     = data.aws_availability_zones.available.names
+  cidr                    = var.network_address_space
+  enable_dns_hostnames    = true
+  enable_nat_gateway      = true
+  single_nat_gateway      = true
+  one_nat_gateway_per_az  = false
+  name                    = "${var.name}-vpc"
+  private_subnets         = ["10.0.10.0/24", "10.0.20.0/24", "10.0.30.0/24"]
+  public_subnets          = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 }
 
 
