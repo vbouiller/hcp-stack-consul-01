@@ -66,8 +66,7 @@ resource "aws_instance" "web_nodes" {
   count                       = var.web_node_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-#  subnet_id                   = element(aws_subnet.web_subnet.*.id, count.index + 1)
-  subnet_id                   = element(module.vpc.private_subnets, count.index + 1)
+  subnet_id                   = element(module.vpc.private_subnets, count.index)
 
   associate_public_ip_address = "false"
   vpc_security_group_ids      = [aws_security_group.web.id]
@@ -84,39 +83,11 @@ resource "aws_instance" "db_nodes" {
   count                       = var.db_node_count
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  subnet_id                   = element(module.vpc.private_subnets, count.index +1) #element(aws_subnet.web_subnet.*.id, count.index + 1)
+  subnet_id                   = element(module.vpc.database_subnets, count.index) 
   associate_public_ip_address = "false"
   vpc_security_group_ids      = [aws_security_group.web.id]
   key_name                    = var.pub_key
   user_data                   = data.template_cloudinit_config.db_nodes.rendered
-  
-  # user_data = <<-EOF
-  #             #!/bin/bash
-  #             mkdir -p /etc/ssh/
-  #             rm -rf /etc/ssh/ca-key.pub
-  #             echo "${local.vault_ca_pub_key}" | sed '$d' > /etc/ssh/ca-key.pub
-  #             #chown 1000:1000 /etc/ssh/ca-key.pub
-  #             chmod 644 /etc/ssh/ca-key.pub
-  #             echo "TrustedUserCAKeys /etc/ssh/ca-key.pub" >> /etc/ssh/sshd_config
-  #             sudo systemctl restart sshd.service
-  #             apt-get update
-  #             apt-get install -y mysql-server
-  #             sudo tee /etc/mysql/mysql.conf.d/mysqld.cnf > /dev/null <<EOT
-  #               [mysqld]
-  #               user            = mysql
-  #               bind-address            = 0.0.0.0
-  #               mysqlx-bind-address     = 127.0.0.1
-  #               key_buffer_size         = 16M
-  #               myisam-recover-options  = BACKUP
-  #               log_error = /var/log/mysql/error.log
-  #               max_binlog_size   = 100M
-  #             EOT
-  #             #echo "CREATE USER 'boundary'@'%' IDENTIFIED WITH mysql_native_password BY 'boundary1234!';" > /home/ubuntu/demo.sql
-  #             echo "CREATE USER '${var.mysql_user}'@'%' IDENTIFIED WITH caching_sha2_password BY '${var.mysql_password}';" > /home/ubuntu/demo.sql
-  #             echo "GRANT ALL PRIVILEGES ON *.* TO '${var.mysql_user}'@'%' WITH GRANT OPTION;" >> /home/ubuntu/demo.sql
-  #             sudo mysql < /home/ubuntu/demo.sql
-  #             systemctl restart mysql
-  #             EOF
   
   tags = {
     Name = format("db-%02d", count.index + 1)

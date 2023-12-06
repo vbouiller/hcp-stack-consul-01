@@ -87,105 +87,11 @@ module "vpc" {
   single_nat_gateway      = true
   one_nat_gateway_per_az  = false
   name                    = "${var.name}-vpc"
-  private_subnets         = ["10.0.10.0/24", "10.0.20.0/24", "10.0.30.0/24"]
+  private_subnets         = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
   public_subnets          = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  database_subnets        = ["10.0.21.0/24", "10.0.22.0/24", "10.0.23.0/24"]
 }
 
-
-# # Internet Gateways and route table
-
-# resource "aws_internet_gateway" "igw" {
-#   vpc_id = module.vpc.vpc_id
-# }
-
-# resource "aws_route_table" "rtb" {
-#   vpc_id = module.vpc.vpc_id
-
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     gateway_id = aws_internet_gateway.igw.id
-#   }
-
-#   tags = {
-#     Name = "${var.name}-igw"
-#   }
-# }
-
-# # nat route table
-
-# resource "aws_route_table" "rtb-nat" {
-#   vpc_id = module.vpc.vpc_id
-
-#   route {
-#     cidr_block     = "0.0.0.0/0"
-#     nat_gateway_id = aws_nat_gateway.nat.id
-#   }
-#   tags = {
-#     Name = "${var.name}-nat_instance"
-#   }
-# }
-
-# # public subnet to IGW
-
-# resource "aws_route_table_association" "dmz-subnet" {
-#   subnet_id      = aws_subnet.dmz_subnet.*.id[0]
-#   route_table_id = aws_route_table.rtb.id
-# }
-
-# # limit the amout of public web subnets to the amount of AZ
-# resource "aws_route_table_association" "pub_web-subnet" {
-#   count          = var.web_subnet_count
-#   subnet_id      = element(aws_subnet.pub_web_subnet.*.id, count.index)
-#   route_table_id = aws_route_table.rtb.id
-# }
-
-# # private subnet to NAT
-
-# resource "aws_route_table_association" "rtb-web" {
-#   count          = var.web_subnet_count
-#   subnet_id      = element(aws_subnet.web_subnet.*.id, count.index)
-#   route_table_id = aws_route_table.rtb-nat.id
-# }
-
-# # subnet public
-
-# resource "aws_subnet" "dmz_subnet" {
-#   vpc_id                  = module.vpc.vpc_id
-#   cidr_block              = cidrsubnet(var.network_address_space, 8, 1)
-#   map_public_ip_on_launch = "true"
-#   availability_zone       = data.aws_availability_zones.available.names[0]
-
-#   tags = {
-#     Name = "dmz-subnet"
-#   }
-# }
-
-# resource "aws_subnet" "pub_web_subnet" {
-#   count                   = var.web_subnet_count
-#   cidr_block              = cidrsubnet(var.network_address_space, 8, count.index + 10)
-#   vpc_id                  = module.vpc.vpc_id
-#   map_public_ip_on_launch = "true"
-#   availability_zone       = element(data.aws_availability_zones.available.names, count.index)
-
-#   tags = {
-#     Name = "web-pub-subnet"
-#   }
-# }
-
-# # subnet private
-
-# resource "aws_subnet" "web_subnet" {
-#   count                   = var.web_subnet_count
-#   cidr_block              = cidrsubnet(var.network_address_space, 8, count.index + 20)
-#   vpc_id                  = module.vpc.vpc_id
-#   map_public_ip_on_launch = "false"
-
-#   availability_zone = element(data.aws_availability_zones.available.names, count.index)
-
-#   tags = {
-#     Name = "web-prv-subnet"
-#   }
-# }
 
 ## Access and Security Groups
 
