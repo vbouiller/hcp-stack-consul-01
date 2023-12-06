@@ -100,7 +100,7 @@ output "howto_connect" {
   ${local.install_demo_app ? "export NOMAD_ADDR=http://${module.aws_ec2_consul_client.public_ip}:8081" : ""}
 
   To access Consul from your local client run:
-  export CONSUL_HTTP_ADDR="${hcp_consul_cluster.main.consul_public_endpoint_url}"
+  export CONSUL_HTTP_ADDR="${local.consul_cluster_addr}"
   export CONSUL_HTTP_TOKEN=$(terraform output consul_root_token)
   
   To connect to the ec2 instance deployed: 
