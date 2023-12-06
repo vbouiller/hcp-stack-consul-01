@@ -9,15 +9,15 @@ data "terraform_remote_state" "hcp" {
   }
 }
 
-locals {
-  priv_key              = base64decode(var.pri_key)
-  vault_cluster_addr    = data.terraform_remote_state.hcp.outputs.vault_cluster_public_url
-  vault_namespace       = data.terraform_remote_state.hcp.outputs.vault_namespace
-  vault_admin_token     = data.terraform_remote_state.hcp.outputs.vault_admin_token
-  boundary_cluster_addr = data.terraform_remote_state.hcp.outputs.boundary_cluster_url
-  worker_token          = boundary_worker.controller_led.controller_generated_activation_token
-  vault_ca_pub_key      = tls_private_key.signing-key.public_key_openssh
-}
+# locals {
+#   priv_key              = base64decode(var.pri_key)
+#   vault_cluster_addr    = data.terraform_remote_state.hcp.outputs.vault_cluster_public_url
+#   vault_namespace       = data.terraform_remote_state.hcp.outputs.vault_namespace
+#   vault_admin_token     = data.terraform_remote_state.hcp.outputs.vault_admin_token
+#   boundary_cluster_addr = data.terraform_remote_state.hcp.outputs.boundary_cluster_url
+#   worker_token          = boundary_worker.controller_led.controller_generated_activation_token
+#   vault_ca_pub_key      = tls_private_key.signing-key.public_key_openssh
+# }
 
 
 
