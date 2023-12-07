@@ -26,6 +26,7 @@ provider "consul" {
   token      = local.consul_root_token
 }
 
+# HVN VPC Peering
 module "aws_hcp_consul" {
   source  = "hashicorp/hcp-consul/aws"
   version = "~> 0.8.10"
@@ -34,6 +35,64 @@ module "aws_hcp_consul" {
   vpc_id          = module.vpc.vpc_id
   subnet_ids      = module.vpc.public_subnets
   route_table_ids = module.vpc.public_route_table_ids
+}
+
+// Security groups
+resource "aws_security_group" "allow_ssh" {
+  name        = "allow_ssh"
+  description = "Allow SSH inbound traffic"
+  #vpc_id      = data.aws_vpc.selected.id
+  vpc_id      = module.vpc.vpc_id
+
+
+  ingress {
+    description      = "SSH into instance"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_ssh"
+  }
+}
+data "aws_subnet" "selected" {
+  id = var.subnet_id
+}
+
+// Consul client instance
+resource "aws_instance" "consul_client" {
+  count                       = 1
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.small"
+  associate_public_ip_address = true
+  subnet_id                   = var.subnet_id
+  vpc_security_group_ids = [
+    aws_security_group.allow_ssh.id,
+    module.aws_hcp_consul.security_group_id
+  ]
+  #key_name = aws_key_pair.consul_client.key_name
+  key_name = var.pub_key
+
+  user_data = templatefile("${path.module}/scripts/user_data.sh", {
+    setup = base64gzip(templatefile("${path.module}/scripts/setup.sh", {
+      consul_ca        = local.client_ca_file
+      consul_config    = local.client_config_file
+      consul_acl_token = local.consul_root_token
+      consul_version   = local.consul_version
+      consul_service = base64encode(templatefile("${path.module}/scripts/service", {
+        service_name = "consul",
+        service_cmd  = "/usr/bin/consul agent -data-dir /var/consul -config-dir=/etc/consul.d/",
+      })),
+      vpc_cidr = var.network_address_space
+    })),
+  })
+
+  tags = {
+    Name = "hcp-consul-client-${count.index}"
+  }
 }
 
 # resource "tls_private_key" "ssh" {
