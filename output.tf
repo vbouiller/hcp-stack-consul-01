@@ -45,6 +45,10 @@ output "ec2_client" {
   description = "EC2 public IP"
 }
 
+output "consul_root_token" {
+  value = local.consul_root_token
+}
+
 
 
 # output "ca_public_key" {
