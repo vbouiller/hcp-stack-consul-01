@@ -27,7 +27,7 @@ provider "consul" {
 
 module "aws_hcp_consul" {
   source  = "hashicorp/hcp-consul/aws"
-  version = "~> 0.8.9"
+  version = "~> 0.8.10"
 
   hvn             = local.hvn
   vpc_id          = module.vpc.vpc_id
