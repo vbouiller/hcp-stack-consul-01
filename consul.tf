@@ -11,6 +11,7 @@ locals {
   consul_version         = data.terraform_remote_state.hcp.outputs.consul_version
   hcp_client_id          = data.terraform_remote_state.hcp.outputs.hcp_client_id
   hcp_client_secret      = data.terraform_remote_state.hcp.outputs.hcp_client_secret
+  hcp_consul_cluster_id  = data.terraform_remote_state.hcp.outputs.hcp_consul_cluster_id
 }
 
 provider "hcp" {

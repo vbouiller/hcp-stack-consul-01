@@ -31,7 +31,7 @@ output "subnet_id" {
 }
 
 output "hcp_consul_cluster_id" {
-  value       = hcp_consul_cluster.main.cluster_id
+  value       = local.hcp_consul_cluster_id
   description = "HCP Consul ID"
 }
 
