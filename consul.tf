@@ -58,9 +58,6 @@ resource "aws_security_group" "allow_ssh" {
     Name = "allow_ssh"
   }
 }
-data "aws_subnet" "selected" {
-  id = var.subnet_id
-}
 
 // Consul client instance
 resource "aws_instance" "consul_client" {
@@ -68,7 +65,7 @@ resource "aws_instance" "consul_client" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.small"
   associate_public_ip_address = true
-  subnet_id                   = var.subnet_id
+  subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids = [
     aws_security_group.allow_ssh.id,
     module.aws_hcp_consul.security_group_id

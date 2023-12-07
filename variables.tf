@@ -92,8 +92,3 @@ variable "mysql_password" {
   description = "Password to be used to access the mysql DB"
   default     = "boundary1234!"
 }
-
-variable "subnet_id" {
-  type        = string
-  description = "AWS subnet (public)"
-}
