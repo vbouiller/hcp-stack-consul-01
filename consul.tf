@@ -3,9 +3,9 @@ locals {
   consul_datacenter      = data.terraform_remote_state.hcp.outputs.consul_datacenter
   consul_root_token      = data.terraform_remote_state.hcp.outputs.consul_root_token
   hvn                    = data.terraform_remote_state.hcp.outputs.hvn
-  ssh                    = true
-  ssm                    = true
-  install_demo_app       = true
+#   ssh                    = true
+#   ssm                    = true
+#   install_demo_app       = true
   client_ca_file         = data.terraform_remote_state.hcp.outputs.client_ca_file
   client_config_file     = data.terraform_remote_state.hcp.outputs.client_config_file
   consul_version         = data.terraform_remote_state.hcp.outputs.consul_version
@@ -79,9 +79,9 @@ resource "aws_instance" "consul_client" {
       consul_config    = local.client_config_file
       consul_acl_token = local.consul_root_token
       consul_version   = local.consul_version
-      consul_service = base64encode(templatefile("${path.module}/scripts/service", {
-        service_name = "consul",
-        service_cmd  = "/usr/bin/consul agent -data-dir /var/consul -config-dir=/etc/consul.d/",
+      consul_service   = base64encode(templatefile("${path.module}/scripts/service", {
+        service_name   = "consul",
+        service_cmd    = "/usr/bin/consul agent -data-dir /var/consul -config-dir=/etc/consul.d/",
       })),
       vpc_cidr = var.network_address_space
     })),
