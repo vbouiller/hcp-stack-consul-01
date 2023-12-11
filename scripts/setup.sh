@@ -44,19 +44,23 @@ setup_consul() {
   ip=$(hostname -I | awk '{print $1}')
   jq '.ca_file = "/etc/consul.d/ca.pem"' client.temp.0 >client.temp.1
   jq --arg token "${consul_acl_token}" '.acl += {"tokens":{"agent":"\($token)"}}' client.temp.1 >client.temp.2
-  jq '.ports = {"grpc":8502}' client.temp.2 >client.temp.3
-  jq '.bind_addr = "{{ GetPrivateInterfaces | include \"network\" \"'${vpc_cidr}'\" | attr \"address\" }}"' client.temp.3 >/etc/consul.d/client.json
+  jq --arg token "${consul_acl_token}" '.acl += {"tokens":{"config_file_service_registration":"\($token)"}}' client.temp.2 >client.temp.3
+  jq '.ports = {"grpc":8502}' client.temp.3 >client.temp.4
+  jq '.bind_addr = "{{ GetPrivateInterfaces | include \"network\" \"'${vpc_cidr}'\" | attr \"address\" }}"' client.temp.4 >/etc/consul.d/client.json
 }
 
 consul_service() {
-  tee /etc/consul.d/service.hcl > /dev/null <<EOF
-  service {
+tee /etc/consul.d/service.hcl > /dev/null <<EOF
+service {
   name = "test"
   id   = "test"
   port = 80
   tags = ["primary"]
-  }
+}
 EOF
+
+chown --recursive consul:consul /etc/consul.d
+
 }
 
 cd /home/ubuntu/
