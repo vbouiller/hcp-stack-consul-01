@@ -40,8 +40,13 @@ output "hcp_consul_security_group" {
   description = "AWS Security group for HCP Consul"
 }
 
-output "ec2_client" {
-  value       = aws_instance.consul_client[0].public_ip
+output "web_clients" {
+  value       = aws_instance.consul_client_web[*].public_ip
+  description = "EC2 public IP"
+}
+
+output "db_clients" {
+  value       = aws_instance.consul_client_db[*].public_ip
   description = "EC2 public IP"
 }
 
