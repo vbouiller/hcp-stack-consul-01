@@ -76,6 +76,8 @@ resource "aws_instance" "consul_client" {
       consul_config    = local.client_config_file
       consul_acl_token = local.consul_root_token
       consul_version   = local.consul_version
+      consul_svc_name  = "test"
+      consul_svc_id    = "test-${count.index + 1}"
       consul_service   = base64encode(templatefile("${path.module}/scripts/service", {
         service_name   = "consul",
         service_cmd    = "/usr/bin/consul agent -data-dir /var/consul -config-dir=/etc/consul.d/",
