@@ -48,6 +48,17 @@ setup_consul() {
   jq '.bind_addr = "{{ GetPrivateInterfaces | include \"network\" \"'${vpc_cidr}'\" | attr \"address\" }}"' client.temp.3 >/etc/consul.d/client.json
 }
 
+consul_service() {
+  tee /etc/consul.d/service.hcl > /dev/null <<EOF
+  service {
+  name = "test"
+  id   = "test"
+  port = 80
+  tags = ["primary"]
+  }
+EOF
+}
+
 cd /home/ubuntu/
 
 echo "${consul_service}" | base64 -d >consul.service
@@ -56,6 +67,7 @@ setup_networking
 setup_deps
 
 setup_consul
+consul_service
 
 start_service "consul"
 
