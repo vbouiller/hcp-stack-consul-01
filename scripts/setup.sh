@@ -50,7 +50,7 @@ setup_consul() {
 }
 
 consul_service() {
-tee /etc/consul.d/service.hcl > /dev/null <<EOF
+tee /etc/consul.d/${consul_svc_name}-svc.hcl > /dev/null <<EOF
 service {
   name = "${consul_svc_name}"
   id   = "${consul_svc_id}"

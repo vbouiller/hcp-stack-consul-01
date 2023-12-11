@@ -57,8 +57,8 @@ resource "aws_security_group" "allow_ssh" {
 }
 
 // Consul client instance
-resource "aws_instance" "consul_client" {
-  count                       = 1
+resource "aws_instance" "consul_client_web" {
+  count                       = 3
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.small"
   associate_public_ip_address = true
@@ -76,8 +76,8 @@ resource "aws_instance" "consul_client" {
       consul_config    = local.client_config_file
       consul_acl_token = local.consul_root_token
       consul_version   = local.consul_version
-      consul_svc_name  = "test"
-      consul_svc_id    = "test-${count.index + 1}"
+      consul_svc_name  = "webservice"
+      consul_svc_id    = "webservice-${count.index + 1}"
       consul_service   = base64encode(templatefile("${path.module}/scripts/service", {
         service_name   = "consul",
         service_cmd    = "/usr/bin/consul agent -data-dir /var/consul -config-dir=/etc/consul.d/",
@@ -87,6 +87,40 @@ resource "aws_instance" "consul_client" {
   })
 
   tags = {
-    Name = "hcp-consul-client-${count.index}"
+    Name = "webservice-${count.index}"
+  }
+}
+
+resource "aws_instance" "consul_client_db" {
+  count                       = 3
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.small"
+  associate_public_ip_address = true
+  subnet_id                   = module.vpc.public_subnets[0]
+  vpc_security_group_ids = [
+    aws_security_group.allow_ssh.id,
+    module.aws_hcp_consul.security_group_id
+  ]
+  #key_name = aws_key_pair.consul_client.key_name
+  key_name = var.pub_key
+
+  user_data = templatefile("${path.module}/scripts/user_data.sh", {
+    setup = base64gzip(templatefile("${path.module}/scripts/setup.sh", {
+      consul_ca        = local.client_ca_file
+      consul_config    = local.client_config_file
+      consul_acl_token = local.consul_root_token
+      consul_version   = local.consul_version
+      consul_svc_name  = "dbservice"
+      consul_svc_id    = "dbservice-${count.index + 1}"
+      consul_service   = base64encode(templatefile("${path.module}/scripts/service", {
+        service_name   = "consul",
+        service_cmd    = "/usr/bin/consul agent -data-dir /var/consul -config-dir=/etc/consul.d/",
+      })),
+      vpc_cidr = var.network_address_space
+    })),
+  })
+
+  tags = {
+    Name = "dbservice-${count.index}"
   }
 }
