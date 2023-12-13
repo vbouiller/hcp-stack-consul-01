@@ -42,7 +42,8 @@ setup_consul() {
   echo "${consul_ca}" | base64 -d >/etc/consul.d/ca.pem
   echo "${consul_config}" | base64 -d >client.temp.0
   ip=$(hostname -I | awk '{print $1}')
-  jq '.ca_file = "/etc/consul.d/ca.pem"' client.temp.0 >client.temp.1
+  #jq '.ca_file = "/etc/consul.d/ca.pem"' client.temp.0 >client.temp.1
+  jq '.tls.defaults += {"ca_file":"/etc/consul.d/ca.pem"}' client.temp.0 >client.temp.1
   jq --arg token "${consul_acl_token}" '.acl += {"tokens":{"agent":"\($token)"}}' client.temp.1 >client.temp.2
   jq --arg token "${consul_acl_token}" '.acl.tokens += {"config_file_service_registration":"\($token)"}' client.temp.2 >client.temp.3
   jq '.ports = {"grpc":8502}' client.temp.3 >client.temp.4
