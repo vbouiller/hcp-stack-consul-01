@@ -128,6 +128,7 @@ resource "aws_instance" "consul_client_web" {
   subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids = [
     aws_security_group.allow_ssh.id,
+    aws_security_group.my_asg.id,
     module.aws_hcp_consul.security_group_id
   ]
   #key_name = aws_key_pair.consul_client.key_name
@@ -162,6 +163,7 @@ resource "aws_instance" "consul_client_db" {
   subnet_id                   = module.vpc.public_subnets[0]
   vpc_security_group_ids = [
     aws_security_group.allow_ssh.id,
+    aws_security_group.my_asg.id,
     module.aws_hcp_consul.security_group_id
   ]
   #key_name = aws_key_pair.consul_client.key_name
