@@ -1,4 +1,0 @@
-{
-  "policies": ["${policy}"],
-  "password": "${password}"
-}

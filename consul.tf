@@ -63,60 +63,60 @@ resource "aws_security_group" "my_asg" {
   vpc_id      = module.vpc.vpc_id
 }
 
-resource "aws_security_group_rule" "egress" {
-  security_group_id = aws_security_group.my_asg.id
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]  
-}
+# resource "aws_security_group_rule" "egress" {
+#   security_group_id = aws_security_group.my_asg.id
+#   type              = "egress"
+#   from_port         = 0
+#   to_port           = 0
+#   protocol          = "-1"
+#   cidr_blocks       = ["0.0.0.0/0"]
+#   ipv6_cidr_blocks  = ["::/0"]  
+# }
 
-resource "aws_security_group_rule" "consul-api" {
-  #count             = var.consul_enabled ? 1 : 0
-  security_group_id = aws_security_group.my_asg.id
-  type              = "ingress"
-  from_port         = 8500
-  to_port           = 8503
-  protocol          = "tcp"
-  cidr_blocks      = ["0.0.0.0/0"]
-  ipv6_cidr_blocks = ["::/0"]  
-  #cidr_blocks       = [var.whitelist_ip]
-}
+# resource "aws_security_group_rule" "consul-api" {
+#   #count             = var.consul_enabled ? 1 : 0
+#   security_group_id = aws_security_group.my_asg.id
+#   type              = "ingress"
+#   from_port         = 8500
+#   to_port           = 8503
+#   protocol          = "tcp"
+#   cidr_blocks      = ["0.0.0.0/0"]
+#   ipv6_cidr_blocks = ["::/0"]  
+#   #cidr_blocks       = [var.whitelist_ip]
+# }
 
-resource "aws_security_group_rule" "consul-dns-tcp" {
-  #count             = var.consul_enabled ? 1 : 0
-  security_group_id = aws_security_group.my_asg.id
-  type              = "ingress"
-  from_port         = 8600
-  to_port           = 8600
-  protocol          = "tcp"
-  cidr_blocks      = ["0.0.0.0/0"]
-  ipv6_cidr_blocks = ["::/0"]
-}
+# resource "aws_security_group_rule" "consul-dns-tcp" {
+#   #count             = var.consul_enabled ? 1 : 0
+#   security_group_id = aws_security_group.my_asg.id
+#   type              = "ingress"
+#   from_port         = 8600
+#   to_port           = 8600
+#   protocol          = "tcp"
+#   cidr_blocks      = ["0.0.0.0/0"]
+#   ipv6_cidr_blocks = ["::/0"]
+# }
 
-resource "aws_security_group_rule" "consul-dns-udp" {
-  #count             = var.consul_enabled ? 1 : 0
-  security_group_id = aws_security_group.my_asg.id
-  type              = "ingress"
-  from_port         = 8600
-  to_port           = 8600
-  protocol          = "udp"
-  cidr_blocks      = ["0.0.0.0/0"]
-  ipv6_cidr_blocks = ["::/0"]
-}
+# resource "aws_security_group_rule" "consul-dns-udp" {
+#   #count             = var.consul_enabled ? 1 : 0
+#   security_group_id = aws_security_group.my_asg.id
+#   type              = "ingress"
+#   from_port         = 8600
+#   to_port           = 8600
+#   protocol          = "udp"
+#   cidr_blocks      = ["0.0.0.0/0"]
+#   ipv6_cidr_blocks = ["::/0"]
+# }
 
-resource "aws_security_group_rule" "consul-sidecar" {
-  #count             = var.consul_enabled ? 1 : 0
-  security_group_id = aws_security_group.my_asg.id
-  type              = "ingress"
-  from_port         = 21000
-  to_port           = 21255
-  protocol          = "tcp"
-  cidr_blocks      = ["0.0.0.0/0"]
-  ipv6_cidr_blocks = ["::/0"]
-}
+# resource "aws_security_group_rule" "consul-sidecar" {
+#   #count             = var.consul_enabled ? 1 : 0
+#   security_group_id = aws_security_group.my_asg.id
+#   type              = "ingress"
+#   from_port         = 21000
+#   to_port           = 21255
+#   protocol          = "tcp"
+#   cidr_blocks      = ["0.0.0.0/0"]
+#   ipv6_cidr_blocks = ["::/0"]
+# }
 
 
 // Consul client instance
