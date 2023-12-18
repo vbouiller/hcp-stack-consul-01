@@ -8,30 +8,6 @@ variable "rs_platform_hcp" {
   default = "hcp-stack-platform"
 }
 
-variable "boundary_global_username" {
-  description = "Terraform boundary_provider Username"
-  }
-
-variable "boundary_global_password" {
-  description = "Terraform boundary_provider Password"
-}
-
-variable "boundary_project_username" {
-  description = "Terraform boundary_provider Username"
-}
-
-variable "boundary_project_password" {
-  description = "Terraform boundary_provider Password"
-}
-
-variable "vault_adm_user" {
-  description = "Additinal non-root Username to access Vault"
-}
-
-variable "vault_adm_password" {
-  description = "non-root Password to access Vault" 
-}
-
 variable "aws_region" {
   description = "AWS region"
   default     = "eu-west-1"
@@ -81,14 +57,4 @@ variable "network_address_space" {
   #default     = "192.168.0.0/16"
   default     = "10.0.0.0/16"
 
-}
-
-variable "mysql_user" {
-  description = "Username to be used to access the mysql DB"
-  default     = "boundary"
-}
-
-variable "mysql_password" {
-  description = "Password to be used to access the mysql DB"
-  default     = "boundary1234!"
 }
