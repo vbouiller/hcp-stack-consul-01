@@ -33,10 +33,6 @@ variable "pub_key" {
   default     = "joestack"
 }
 
-variable "pri_key" {
-  description = "the base64 encoded private key to be used to access the bastion host and ansible nodes"
-}
-
 variable "web_node_count" {
   description = "number of workers (web-nodes)"
   default     = "5"
